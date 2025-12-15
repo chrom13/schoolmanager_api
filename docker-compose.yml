@@ -1,0 +1,64 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: schoolmanager-api
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - schoolmanager-network
+    depends_on:
+      - mysql
+      - redis
+
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile.apache
+    container_name: schoolmanager-apache
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    networks:
+      - schoolmanager-network
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:8.0
+    container_name: schoolmanager-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: schoolmanager_dev
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: schoolmanager
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - schoolmanager-network
+
+  redis:
+    image: redis:alpine
+    container_name: schoolmanager-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    networks:
+      - schoolmanager-network
+
+networks:
+  schoolmanager-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
