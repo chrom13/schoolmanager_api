@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\GradoController;
+use App\Http\Controllers\Api\V1\GrupoController;
+use App\Http\Controllers\Api\V1\NivelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,4 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
     });
+
+    // Estructura Académica
+    Route::apiResource('niveles', NivelController::class);
+    Route::apiResource('grados', GradoController::class);
+    Route::apiResource('grupos', GrupoController::class);
 });
