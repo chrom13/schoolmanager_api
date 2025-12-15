@@ -611,6 +611,330 @@
 			]
 		},
 		{
+			"name": "Padres",
+			"item": [
+				{
+					"name": "Listar Padres",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/padres",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"padres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Padres",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/padres?search=Juan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"padres"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Juan"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Padre",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre_completo\": \"María González López\",\n    \"email\": \"maria.gonzalez@email.com\",\n    \"telefono\": \"4491234567\",\n    \"rfc\": \"GOLM850615ABC\",\n    \"regimen_fiscal\": \"605\",\n    \"uso_cfdi\": \"G03\",\n    \"codigo_postal\": \"20000\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/padres",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"padres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Padre",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/padres/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"padres",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Padre",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"telefono\": \"4499876543\",\n    \"regimen_fiscal\": \"612\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/padres/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"padres",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Padre",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/padres/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"padres",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Alumnos",
+			"item": [
+				{
+					"name": "Listar Alumnos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/alumnos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"alumnos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Alumnos por Grupo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/alumnos?grupo_id=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"alumnos"
+							],
+							"query": [
+								{
+									"key": "grupo_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Alumno con Padres",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Carlos\",\n    \"apellido_paterno\": \"Ramírez\",\n    \"apellido_materno\": \"Sánchez\",\n    \"curp\": \"RASC150823HDFMRL09\",\n    \"fecha_nacimiento\": \"2015-08-23\",\n    \"grupo_id\": 1,\n    \"padres\": [\n        {\n            \"padre_id\": 1,\n            \"parentesco\": \"madre\",\n            \"responsable_pagos\": true,\n            \"contacto_emergencia\": true\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/alumnos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"alumnos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Alumno",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/alumnos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"alumnos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Alumno",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"grupo_id\": 2,\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/alumnos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"alumnos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Alumno",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/alumnos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"alumnos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Test",
 			"request": {
 				"method": "GET",

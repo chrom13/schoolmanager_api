@@ -6,6 +6,7 @@ use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Grupo extends Model
 {
@@ -40,5 +41,10 @@ class Grupo extends Model
     public function maestro(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'maestro_id');
+    }
+
+    public function alumnos(): HasMany
+    {
+        return $this->hasMany(Alumno::class);
     }
 }
