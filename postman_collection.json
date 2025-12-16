@@ -1187,6 +1187,330 @@
 			]
 		},
 		{
+			"name": "Ciclos Escolares",
+			"item": [
+				{
+					"name": "Listar Ciclos Escolares",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ciclos-escolares",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ciclos-escolares"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Ciclos con Períodos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ciclos-escolares?con_periodos=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ciclos-escolares"
+							],
+							"query": [
+								{
+									"key": "con_periodos",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Ciclo Escolar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"2024-2025\",\n    \"fecha_inicio\": \"2024-08-15\",\n    \"fecha_fin\": \"2025-07-15\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/ciclos-escolares",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ciclos-escolares"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Ciclo Escolar",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ciclos-escolares/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ciclos-escolares",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Ciclo Escolar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"activo\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/ciclos-escolares/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ciclos-escolares",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Ciclo Escolar",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ciclos-escolares/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ciclos-escolares",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Períodos",
+			"item": [
+				{
+					"name": "Listar Períodos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/periodos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"periodos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Períodos por Ciclo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/periodos?ciclo_escolar_id=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"periodos"
+							],
+							"query": [
+								{
+									"key": "ciclo_escolar_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Período",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ciclo_escolar_id\": 1,\n    \"nombre\": \"1er Bimestre\",\n    \"numero\": 1,\n    \"tipo\": \"bimestre\",\n    \"fecha_inicio\": \"2024-08-15\",\n    \"fecha_fin\": \"2024-10-15\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/periodos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"periodos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Período",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/periodos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"periodos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Período",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"activo\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/periodos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"periodos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Período",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/periodos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"periodos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Test",
 			"request": {
 				"method": "GET",

@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Api\V1\AlumnoController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CicloEscolarController;
 use App\Http\Controllers\Api\V1\GradoController;
 use App\Http\Controllers\Api\V1\GrupoController;
 use App\Http\Controllers\Api\V1\MateriaController;
 use App\Http\Controllers\Api\V1\NivelController;
 use App\Http\Controllers\Api\V1\PadreController;
+use App\Http\Controllers\Api\V1\PeriodoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -58,4 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('materias/{materia}/asignar-grupo', [MateriaController::class, 'asignarGrupo']);
     Route::put('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'actualizarAsignacion']);
     Route::delete('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'desasignarGrupo']);
+
+    // Ciclos Escolares y Períodos
+    Route::apiResource('ciclos-escolares', CicloEscolarController::class);
+    Route::apiResource('periodos', PeriodoController::class);
 });
