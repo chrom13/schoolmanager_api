@@ -1511,6 +1511,154 @@
 			]
 		},
 		{
+			"name": "Calificaciones",
+			"item": [
+				{
+					"name": "Listar Calificaciones",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {
+							"raw": "{{base_url}}/calificaciones?alumno_id=1&periodo_id=1",
+							"host": ["{{base_url}}"],
+							"path": ["calificaciones"],
+							"query": [{"key": "alumno_id", "value": "1"}, {"key": "periodo_id", "value": "1"}]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear/Actualizar Calificación",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\\n    \"alumno_id\": 1,\\n    \"materia_id\": 1,\\n    \"periodo_id\": 1,\\n    \"calificacion\": 9.5,\\n    \"observaciones\": \"Excelente desempeño\"\\n}"},
+						"url": {"raw": "{{base_url}}/calificaciones", "host": ["{{base_url}}"], "path": ["calificaciones"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Boleta de Calificaciones",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {
+							"raw": "{{base_url}}/alumnos/1/boleta?periodo_id=1",
+							"host": ["{{base_url}}"],
+							"path": ["alumnos", "1", "boleta"],
+							"query": [{"key": "periodo_id", "value": "1"}]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asistencias",
+			"item": [
+				{
+					"name": "Listar Asistencias",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {
+							"raw": "{{base_url}}/asistencias?grupo_id=1&fecha=2024-09-15",
+							"host": ["{{base_url}}"],
+							"path": ["asistencias"],
+							"query": [{"key": "grupo_id", "value": "1"}, {"key": "fecha", "value": "2024-09-15"}]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Asistencia",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\\n    \"alumno_id\": 1,\\n    \"grupo_id\": 1,\\n    \"fecha\": \"2024-09-15\",\\n    \"estado\": \"presente\"\\n}"},
+						"url": {"raw": "{{base_url}}/asistencias", "host": ["{{base_url}}"], "path": ["asistencias"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Asistencia Grupo Completo",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\\n    \"fecha\": \"2024-09-15\",\\n    \"asistencias\": [\\n        {\"alumno_id\": 1, \"estado\": \"presente\"},\\n        {\"alumno_id\": 2, \"estado\": \"falta\", \"observaciones\": \"Sin justificante\"}\\n    ]\\n}"},
+						"url": {"raw": "{{base_url}}/grupos/1/asistencias", "host": ["{{base_url}}"], "path": ["grupos", "1", "asistencias"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Reporte de Asistencias Alumno",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {
+							"raw": "{{base_url}}/alumnos/1/reporte-asistencias?fecha_inicio=2024-08-01&fecha_fin=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["alumnos", "1", "reporte-asistencias"],
+							"query": [{"key": "fecha_inicio", "value": "2024-08-01"}, {"key": "fecha_fin", "value": "2024-12-31"}]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conceptos de Cobro",
+			"item": [
+				{
+					"name": "Listar Conceptos",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/conceptos-cobro", "host": ["{{base_url}}"], "path": ["conceptos-cobro"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Concepto",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\\n    \"nombre\": \"Colegiatura\",\\n    \"descripcion\": \"Pago mensual de colegiatura\",\\n    \"precio_base\": 5000.00,\\n    \"periodicidad\": \"mensual\"\\n}"},
+						"url": {"raw": "{{base_url}}/conceptos-cobro", "host": ["{{base_url}}"], "path": ["conceptos-cobro"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Concepto",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/conceptos-cobro/1", "host": ["{{base_url}}"], "path": ["conceptos-cobro", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Concepto",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}],
+						"body": {"mode": "raw", "raw": "{\\n    \"precio_base\": 5500.00\\n}"},
+						"url": {"raw": "{{base_url}}/conceptos-cobro/1", "host": ["{{base_url}}"], "path": ["conceptos-cobro", "1"]}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Concepto",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/conceptos-cobro/1", "host": ["{{base_url}}"], "path": ["conceptos-cobro", "1"]}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Test",
 			"request": {
 				"method": "GET",

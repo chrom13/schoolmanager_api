@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AlumnoController;
+use App\Http\Controllers\Api\V1\AsistenciaController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CalificacionController;
 use App\Http\Controllers\Api\V1\CicloEscolarController;
+use App\Http\Controllers\Api\V1\ConceptoCobroController;
 use App\Http\Controllers\Api\V1\GradoController;
 use App\Http\Controllers\Api\V1\GrupoController;
 use App\Http\Controllers\Api\V1\MateriaController;
@@ -64,4 +67,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Ciclos Escolares y Períodos
     Route::apiResource('ciclos-escolares', CicloEscolarController::class);
     Route::apiResource('periodos', PeriodoController::class);
+
+    // Calificaciones
+    Route::apiResource('calificaciones', CalificacionController::class);
+    Route::get('alumnos/{alumnoId}/boleta', [CalificacionController::class, 'boleta']);
+
+    // Asistencias
+    Route::apiResource('asistencias', AsistenciaController::class);
+    Route::post('grupos/{grupoId}/asistencias', [AsistenciaController::class, 'registrarGrupo']);
+    Route::get('alumnos/{alumnoId}/reporte-asistencias', [AsistenciaController::class, 'reporteAlumno']);
+
+    // Conceptos de Cobro
+    Route::apiResource('conceptos-cobro', ConceptoCobroController::class);
 });
