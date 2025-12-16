@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AlumnoController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GradoController;
 use App\Http\Controllers\Api\V1\GrupoController;
+use App\Http\Controllers\Api\V1\MateriaController;
 use App\Http\Controllers\Api\V1\NivelController;
 use App\Http\Controllers\Api\V1\PadreController;
 use Illuminate\Http\Request;
@@ -51,4 +52,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Alumnos y Padres
     Route::apiResource('alumnos', AlumnoController::class);
     Route::apiResource('padres', PadreController::class);
+
+    // Materias
+    Route::apiResource('materias', MateriaController::class);
+    Route::post('materias/{materia}/asignar-grupo', [MateriaController::class, 'asignarGrupo']);
+    Route::put('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'actualizarAsignacion']);
+    Route::delete('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'desasignarGrupo']);
 });

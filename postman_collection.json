@@ -935,6 +935,258 @@
 			]
 		},
 		{
+			"name": "Materias",
+			"item": [
+				{
+					"name": "Listar Materias",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/materias",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Materias con Grupos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/materias?con_grupos=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias"
+							],
+							"query": [
+								{
+									"key": "con_grupos",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Materia",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Matemáticas\",\n    \"clave\": \"MAT01\",\n    \"descripcion\": \"Aritmética, álgebra y geometría\",\n    \"color\": \"#FF5733\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/materias",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Materia",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/materias/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Materia",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"descripcion\": \"Matemáticas avanzadas\",\n    \"color\": \"#3366FF\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/materias/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Materia",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/materias/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asignar Materia a Grupo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"grupo_id\": 1,\n    \"maestro_id\": 1,\n    \"horas_semanales\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/materias/1/asignar-grupo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias",
+								"1",
+								"asignar-grupo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Asignación Materia-Grupo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maestro_id\": 2,\n    \"horas_semanales\": 6\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/materias/1/grupos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias",
+								"1",
+								"grupos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desasignar Materia de Grupo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/materias/1/grupos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"materias",
+								"1",
+								"grupos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Test",
 			"request": {
 				"method": "GET",
