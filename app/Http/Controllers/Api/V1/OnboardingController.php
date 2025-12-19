@@ -68,6 +68,14 @@ class OnboardingController extends Controller
 
         $escuela = $request->user()->escuela;
 
+        // Obtener onboarding_data y asegurar que sea un array
+        $onboardingData = $escuela->onboarding_data;
+        if (is_string($onboardingData)) {
+            $onboardingData = json_decode($onboardingData, true) ?? [];
+        } elseif (is_null($onboardingData)) {
+            $onboardingData = [];
+        }
+
         // Actualizar datos de la escuela
         $escuela->update([
             'cct' => $request->cct,
@@ -76,7 +84,7 @@ class OnboardingController extends Controller
             'telefono' => $request->telefono,
             'codigo_postal' => $request->codigo_postal,
             'onboarding_data' => array_merge(
-                $escuela->onboarding_data ?? [],
+                $onboardingData,
                 ['paso_actual' => 'estructura']
             ),
         ]);
@@ -94,10 +102,18 @@ class OnboardingController extends Controller
     {
         $escuela = $request->user()->escuela;
 
+        // Obtener onboarding_data y asegurar que sea un array
+        $onboardingData = $escuela->onboarding_data;
+        if (is_string($onboardingData)) {
+            $onboardingData = json_decode($onboardingData, true) ?? [];
+        } elseif (is_null($onboardingData)) {
+            $onboardingData = [];
+        }
+
         // Marcar paso de estructura como completado
         $escuela->update([
             'onboarding_data' => array_merge(
-                $escuela->onboarding_data ?? [],
+                $onboardingData,
                 ['paso_actual' => 'completado']
             ),
         ]);
@@ -115,11 +131,19 @@ class OnboardingController extends Controller
     {
         $escuela = $request->user()->escuela;
 
+        // Obtener onboarding_data y asegurar que sea un array
+        $onboardingData = $escuela->onboarding_data;
+        if (is_string($onboardingData)) {
+            $onboardingData = json_decode($onboardingData, true) ?? [];
+        } elseif (is_null($onboardingData)) {
+            $onboardingData = [];
+        }
+
         $escuela->update([
             'onboarding_completado' => true,
             'onboarding_completado_at' => now(),
             'onboarding_data' => array_merge(
-                $escuela->onboarding_data ?? [],
+                $onboardingData,
                 ['paso_actual' => 'dashboard']
             ),
         ]);
@@ -137,9 +161,17 @@ class OnboardingController extends Controller
     {
         $escuela = $request->user()->escuela;
 
+        // Obtener onboarding_data y asegurar que sea un array
+        $onboardingData = $escuela->onboarding_data;
+        if (is_string($onboardingData)) {
+            $onboardingData = json_decode($onboardingData, true) ?? [];
+        } elseif (is_null($onboardingData)) {
+            $onboardingData = [];
+        }
+
         $escuela->update([
             'onboarding_data' => array_merge(
-                $escuela->onboarding_data ?? [],
+                $onboardingData,
                 [
                     'skipped' => true,
                     'skipped_at' => now()->toIso8601String(),
