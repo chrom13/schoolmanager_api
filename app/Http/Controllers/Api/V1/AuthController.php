@@ -138,7 +138,7 @@ class AuthController extends Controller
                 'message' => '¡Cuenta creada exitosamente!',
                 'data' => [
                     'escuela' => $escuela,
-                    'usuario' => $usuario,
+                    'usuario' => $usuario->load('escuela'),
                     'token' => $token,
                     'onboarding_required' => true,
                 ]
