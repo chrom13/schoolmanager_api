@@ -106,10 +106,10 @@ class AuthController extends Controller
                 'activo' => true,
                 'es_registro_express' => true,
                 'onboarding_completado' => false,
-                'onboarding_data' => json_encode([
+                'onboarding_data' => [
                     'paso_actual' => 'bienvenida',
                     'fecha_registro' => now()->toIso8601String(),
-                ]),
+                ],
             ]);
 
             // Crear usuario director
