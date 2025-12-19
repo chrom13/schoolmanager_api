@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Grupo extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use HasFactory, BelongsToTenant, SoftDeletes;
 
     protected $table = 'grupos';
 
@@ -21,14 +22,13 @@ class Grupo extends Model
         'nombre',
         'capacidad_maxima',
         'maestro_id',
-        'activo',
     ];
 
     protected $casts = [
         'capacidad_maxima' => 'integer',
-        'activo' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**

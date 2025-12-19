@@ -6,10 +6,11 @@ use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Materia extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use HasFactory, BelongsToTenant, SoftDeletes;
 
     protected $fillable = [
         'escuela_id',
@@ -17,11 +18,12 @@ class Materia extends Model
         'clave',
         'descripcion',
         'color',
-        'activo',
     ];
 
     protected $casts = [
-        'activo' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**

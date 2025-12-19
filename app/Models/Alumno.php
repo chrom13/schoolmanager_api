@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Alumno extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use HasFactory, BelongsToTenant, SoftDeletes;
 
     protected $fillable = [
         'escuela_id',
@@ -21,12 +22,13 @@ class Alumno extends Model
         'curp',
         'fecha_nacimiento',
         'foto_url',
-        'activo',
     ];
 
     protected $casts = [
         'fecha_nacimiento' => 'date',
-        'activo' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     protected $appends = ['nombre_completo'];

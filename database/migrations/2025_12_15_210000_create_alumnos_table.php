@@ -21,11 +21,11 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->foreignId('grupo_id')->nullable()->constrained('grupos')->onDelete('set null');
             $table->string('foto_url')->nullable();
-            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
-            $table->index(['escuela_id', 'activo']);
+            $table->index(['escuela_id', 'deleted_at']);
             $table->index(['escuela_id', 'grupo_id']);
         });
     }

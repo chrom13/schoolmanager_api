@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('escuela_id')->constrained('escuelas')->onDelete('cascade');
             $table->enum('nombre', ['preescolar', 'primaria', 'secundaria', 'preparatoria']);
-            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->unique(['escuela_id', 'nombre']);

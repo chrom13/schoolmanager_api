@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('nombre'); // A, B, C, etc.
             $table->integer('capacidad_maxima')->unsigned()->default(30);
             $table->foreignId('maestro_id')->nullable()->constrained('usuarios')->onDelete('set null');
-            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->index(['escuela_id', 'grado_id']);

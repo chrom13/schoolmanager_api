@@ -22,12 +22,12 @@ return new class extends Migration
             $table->string('uso_cfdi')->nullable();
             $table->string('codigo_postal')->nullable();
             $table->string('stripe_customer_id')->nullable();
-            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->unique(['escuela_id', 'email']);
-            $table->index(['escuela_id', 'activo']);
+            $table->index(['escuela_id', 'deleted_at']);
         });
     }
 

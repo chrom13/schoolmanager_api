@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('clave')->nullable();
             $table->text('descripcion')->nullable();
             $table->string('color')->nullable()->comment('Color hex para UI');
-            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->unique(['escuela_id', 'nombre']);
-            $table->index(['escuela_id', 'activo']);
+            $table->index(['escuela_id', 'deleted_at']);
         });
     }
 

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('nivel_id')->constrained('niveles')->onDelete('cascade');
             $table->string('nombre');
             $table->integer('orden')->unsigned();
-            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->index(['escuela_id', 'nivel_id']);

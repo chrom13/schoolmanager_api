@@ -18,13 +18,14 @@ return new class extends Migration
             $table->string('email');
             $table->string('password');
             $table->enum('rol', ['director', 'admin', 'maestro', 'padre'])->default('admin');
-            $table->boolean('activo')->default(true);
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->unique(['escuela_id', 'email']);
             $table->index(['escuela_id', 'rol']);
+            $table->index(['escuela_id', 'deleted_at']);
         });
     }
 

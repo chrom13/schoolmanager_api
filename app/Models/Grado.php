@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Grado extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use HasFactory, BelongsToTenant, SoftDeletes;
 
     protected $table = 'grados';
 
@@ -19,14 +20,13 @@ class Grado extends Model
         'nivel_id',
         'nombre',
         'orden',
-        'activo',
     ];
 
     protected $casts = [
         'orden' => 'integer',
-        'activo' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**

@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, BelongsToTenant;
+    use HasFactory, Notifiable, HasApiTokens, BelongsToTenant, SoftDeletes;
 
     protected $table = 'usuarios';
 
@@ -20,7 +21,6 @@ class Usuario extends Authenticatable
         'email',
         'password',
         'rol',
-        'activo',
     ];
 
     protected $hidden = [
@@ -29,9 +29,9 @@ class Usuario extends Authenticatable
     ];
 
     protected $casts = [
-        'activo' => 'boolean',
         'password' => 'hashed',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 }
