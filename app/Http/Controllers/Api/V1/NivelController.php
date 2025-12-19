@@ -28,8 +28,16 @@ class NivelController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $escuelaId = $request->user()->escuela_id;
+
         $request->validate([
-            'nombre' => ['required', Rule::in(NivelEnum::values())],
+            'nombre' => [
+                'required',
+                Rule::in(NivelEnum::values()),
+                Rule::unique('niveles', 'nombre')->where('escuela_id', $escuelaId)
+            ],
+        ], [
+            'nombre.unique' => 'Este nivel ya existe en tu escuela',
         ]);
 
         $nivel = Nivel::create([
@@ -78,6 +86,13 @@ class NivelController extends Controller
      */
     public function destroy(Nivel $nivel): JsonResponse
     {
+        // Verificar si el nivel tiene grados asociados
+        if ($nivel->grados()->count() > 0) {
+            return response()->json([
+                'message' => 'No se puede eliminar el nivel porque tiene grados asociados'
+            ], 422);
+        }
+
         $nivel->delete();
 
         return response()->json([
