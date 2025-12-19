@@ -24,10 +24,18 @@ class Escuela extends Model
         'regimen_fiscal',
         'stripe_account_id',
         'activo',
+        'onboarding_completado',
+        'onboarding_data',
+        'onboarding_completado_at',
+        'es_registro_express',
     ];
 
     protected $casts = [
         'activo' => 'boolean',
+        'onboarding_completado' => 'boolean',
+        'es_registro_express' => 'boolean',
+        'onboarding_data' => 'array',
+        'onboarding_completado_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

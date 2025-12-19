@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\RegisterExpressRequest;
 use App\Models\Escuela;
 use App\Models\Usuario;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -61,6 +64,96 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'Error al crear la escuela',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Registro express - Solo datos mínimos
+     */
+    public function registerExpress(RegisterExpressRequest $request): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            // Generar slug único desde el nombre de la escuela
+            $slug = Str::slug($request->nombre_escuela);
+            $originalSlug = $slug;
+            $counter = 1;
+
+            // Asegurar que el slug sea único
+            while (Escuela::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            // Generar CCT temporal único
+            $cctTemp = null;
+            do {
+                $cctTemp = 'TEMP-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            } while (Escuela::where('cct', $cctTemp)->exists());
+
+            // Inferir nombre del usuario del email si no se proporciona
+            $nombre = $request->nombre ?? explode('@', $request->email)[0];
+
+            // Crear escuela con datos mínimos
+            $escuela = Escuela::create([
+                'nombre' => $request->nombre_escuela,
+                'slug' => $slug,
+                'cct' => $cctTemp,
+                'email' => $request->email, // Temporalmente usar el email del usuario
+                'activo' => true,
+                'es_registro_express' => true,
+                'onboarding_completado' => false,
+                'onboarding_data' => json_encode([
+                    'paso_actual' => 'bienvenida',
+                    'fecha_registro' => now()->toIso8601String(),
+                ]),
+            ]);
+
+            // Crear usuario director
+            $usuario = Usuario::create([
+                'escuela_id' => $escuela->id,
+                'nombre' => $nombre,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'rol' => 'director',
+                'activo' => true,
+            ]);
+
+            // Generar token
+            $token = $usuario->createToken('auth-token')->plainTextToken;
+
+            DB::commit();
+
+            // Log para analytics
+            Log::info('Registro express exitoso', [
+                'escuela_id' => $escuela->id,
+                'usuario_id' => $usuario->id,
+                'slug' => $slug,
+            ]);
+
+            return response()->json([
+                'message' => '¡Cuenta creada exitosamente!',
+                'data' => [
+                    'escuela' => $escuela,
+                    'usuario' => $usuario,
+                    'token' => $token,
+                    'onboarding_required' => true,
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error en registro express', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'message' => 'Error al crear la cuenta',
                 'error' => $e->getMessage()
             ], 500);
         }

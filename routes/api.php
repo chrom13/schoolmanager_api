@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\GradoController;
 use App\Http\Controllers\Api\V1\GrupoController;
 use App\Http\Controllers\Api\V1\MateriaController;
 use App\Http\Controllers\Api\V1\NivelController;
+use App\Http\Controllers\Api\V1\OnboardingController;
 use App\Http\Controllers\Api\V1\PadreController;
 use App\Http\Controllers\Api\V1\PeriodoController;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ Route::get('/test', function () {
 // Auth routes (public)
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
+    Route::post('register-express', [AuthController::class, 'registerExpress']);
     Route::post('login', [AuthController::class, 'login']);
 });
 
@@ -57,6 +59,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Alumnos y Padres
     Route::apiResource('alumnos', AlumnoController::class);
     Route::apiResource('padres', PadreController::class);
+
+    // Onboarding
+    Route::prefix('onboarding')->group(function () {
+        Route::get('status', [OnboardingController::class, 'status']);
+        Route::post('complete-school-data', [OnboardingController::class, 'completeSchoolData']);
+        Route::post('complete-structure', [OnboardingController::class, 'completeStructure']);
+        Route::post('complete', [OnboardingController::class, 'complete']);
+        Route::post('skip', [OnboardingController::class, 'skip']);
+    });
 
     // Materias
     Route::apiResource('materias', MateriaController::class);
