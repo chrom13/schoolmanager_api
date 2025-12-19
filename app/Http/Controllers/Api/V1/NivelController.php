@@ -97,6 +97,6 @@ class NivelController extends Controller
 
         return response()->json([
             'message' => 'Nivel eliminado exitosamente'
-        ]);
+        ], 200);
     }
 }
