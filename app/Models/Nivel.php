@@ -32,4 +32,12 @@ class Nivel extends Model
     {
         return $this->hasMany(Grado::class);
     }
+
+    /**
+     * Relación hasManyThrough para obtener todos los grupos del nivel
+     */
+    public function grupos()
+    {
+        return $this->hasManyThrough(Grupo::class, Grado::class);
+    }
 }

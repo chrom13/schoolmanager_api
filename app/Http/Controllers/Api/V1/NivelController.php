@@ -16,7 +16,14 @@ class NivelController extends Controller
      */
     public function index(): JsonResponse
     {
-        $niveles = Nivel::with('grados')->get();
+        $niveles = Nivel::with('grados')
+            ->withCount([
+                'grados as total_alumnos' => function ($query) {
+                    $query->join('alumnos', 'grupos.id', '=', 'alumnos.grupo_id')
+                        ->whereNull('alumnos.deleted_at');
+                }
+            ])
+            ->get();
 
         return response()->json([
             'data' => $niveles
@@ -42,7 +49,6 @@ class NivelController extends Controller
 
         $nivel = Nivel::create([
             'nombre' => $request->nombre,
-            'activo' => true,
         ]);
 
         return response()->json([
@@ -70,10 +76,9 @@ class NivelController extends Controller
     {
         $request->validate([
             'nombre' => ['sometimes', Rule::in(NivelEnum::values())],
-            'activo' => ['sometimes', 'boolean'],
         ]);
 
-        $nivel->update($request->only(['nombre', 'activo']));
+        $nivel->update($request->only(['nombre']));
 
         return response()->json([
             'message' => 'Nivel actualizado exitosamente',
