@@ -43,8 +43,8 @@ class Escuela extends Model
     /**
      * Relaciones
      */
-    public function usuarios(): HasMany
+    public function users(): HasMany
     {
-        return $this->hasMany(Usuario::class);
+        return $this->hasMany(User::class);
     }
 }

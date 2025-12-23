@@ -13,12 +13,20 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('escuela_id')->constrained('escuelas')->onDelete('cascade');
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('rol', ['director', 'admin', 'maestro', 'padre'])->default('admin');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            // Indexes para multi-tenancy
+            $table->unique(['escuela_id', 'email']);
+            $table->index(['escuela_id', 'rol']);
+            $table->index(['escuela_id', 'deleted_at']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

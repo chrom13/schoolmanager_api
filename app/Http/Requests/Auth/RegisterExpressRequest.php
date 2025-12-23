@@ -24,7 +24,7 @@ class RegisterExpressRequest extends FormRequest
     {
         return [
             'nombre_escuela' => ['required', 'string', 'max:255', 'min:3'],
-            'email' => ['required', 'email', 'max:255', 'unique:usuarios,email'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
             'nombre' => ['nullable', 'string', 'max:255'], // Opcional, se infiere del email
         ];

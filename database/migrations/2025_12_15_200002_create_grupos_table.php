@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('grado_id')->constrained('grados')->onDelete('cascade');
             $table->string('nombre'); // A, B, C, etc.
             $table->integer('capacidad_maxima')->unsigned()->default(30);
-            $table->foreignId('maestro_id')->nullable()->constrained('usuarios')->onDelete('set null');
+            $table->foreignId('maestro_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
 

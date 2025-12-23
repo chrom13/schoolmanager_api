@@ -136,7 +136,7 @@ class MateriaController extends Controller
     {
         $request->validate([
             'grupo_id' => ['required', 'exists:grupos,id'],
-            'maestro_id' => ['nullable', 'exists:usuarios,id'],
+            'maestro_id' => ['nullable', 'exists:users,id'],
             'horas_semanales' => ['nullable', 'integer', 'min:1', 'max:50'],
         ]);
 
@@ -166,7 +166,7 @@ class MateriaController extends Controller
     public function actualizarAsignacion(Request $request, Materia $materia, int $grupoId): JsonResponse
     {
         $request->validate([
-            'maestro_id' => ['nullable', 'exists:usuarios,id'],
+            'maestro_id' => ['nullable', 'exists:users,id'],
             'horas_semanales' => ['nullable', 'integer', 'min:1', 'max:50'],
             'activo' => ['sometimes', 'boolean'],
         ]);

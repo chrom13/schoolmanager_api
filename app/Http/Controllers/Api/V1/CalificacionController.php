@@ -49,7 +49,7 @@ class CalificacionController extends Controller
             'periodo_id' => ['required', 'exists:periodos,id'],
             'calificacion' => ['required', 'numeric', 'min:0', 'max:100'],
             'observaciones' => ['nullable', 'string'],
-            'maestro_id' => ['nullable', 'exists:usuarios,id'],
+            'maestro_id' => ['nullable', 'exists:users,id'],
         ]);
 
         // Verificar si ya existe una calificación

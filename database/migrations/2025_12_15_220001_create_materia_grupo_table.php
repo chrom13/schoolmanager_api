@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('materia_id')->constrained('materias')->onDelete('cascade');
             $table->foreignId('grupo_id')->constrained('grupos')->onDelete('cascade');
-            $table->foreignId('maestro_id')->nullable()->constrained('usuarios')->onDelete('set null');
+            $table->foreignId('maestro_id')->nullable()->constrained('users')->onDelete('set null');
             $table->integer('horas_semanales')->nullable()->comment('Horas de clase por semana');
             $table->boolean('activo')->default(true);
             $table->timestamps();

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('periodo_id')->constrained('periodos')->onDelete('cascade');
             $table->decimal('calificacion', 5, 2)->comment('Calificación numérica');
             $table->text('observaciones')->nullable();
-            $table->foreignId('maestro_id')->nullable()->constrained('usuarios')->onDelete('set null');
+            $table->foreignId('maestro_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
 
             // Indexes

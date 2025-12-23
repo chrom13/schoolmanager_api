@@ -7,13 +7,15 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RegisterExpressRequest;
 use App\Models\Escuela;
-use App\Models\Usuario;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
 {
@@ -36,19 +38,21 @@ class AuthController extends Controller
             ]);
 
             // Crear usuario director
-            $usuario = Usuario::create([
+            $usuario = User::create([
                 'escuela_id' => $escuela->id,
-                'nombre' => $request->nombre,
+                'name' => $request->nombre,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'rol' => 'director',
-                'activo' => true,
             ]);
 
             // Generar token
             $token = $usuario->createToken('auth-token')->plainTextToken;
 
             DB::commit();
+
+            // Enviar email de verificación
+            $usuario->sendEmailVerificationNotification();
 
             return response()->json([
                 'message' => 'Escuela y usuario creados exitosamente',
@@ -113,19 +117,21 @@ class AuthController extends Controller
             ]);
 
             // Crear usuario director
-            $usuario = Usuario::create([
+            $usuario = User::create([
                 'escuela_id' => $escuela->id,
-                'nombre' => $nombre,
+                'name' => $nombre,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'rol' => 'director',
-                'activo' => true,
             ]);
 
             // Generar token
             $token = $usuario->createToken('auth-token')->plainTextToken;
 
             DB::commit();
+
+            // Enviar email de verificación
+            $usuario->sendEmailVerificationNotification();
 
             // Log para analytics
             Log::info('Registro express exitoso', [
@@ -165,7 +171,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         // Buscar usuario por email (sin scope de tenant)
-        $usuario = Usuario::withoutGlobalScope('escuela')
+        $usuario = User::withoutGlobalScope('escuela')
             ->where('email', $request->email)
             ->first();
 
@@ -176,19 +182,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Verificar que la escuela esté activa
-        if (!$usuario->escuela->activo) {
-            return response()->json([
-                'message' => 'La escuela está inactiva'
-            ], 403);
-        }
-
-        // Verificar que el usuario esté activo
-        if (!$usuario->activo) {
-            return response()->json([
-                'message' => 'Usuario inactivo'
-            ], 403);
-        }
+        // Las validaciones de soft delete se manejan automáticamente con el trait
 
         // Generar token
         $token = $usuario->createToken('auth-token')->plainTextToken;
@@ -221,6 +215,167 @@ class AuthController extends Controller
     {
         return response()->json([
             'data' => $request->user()->load('escuela')
+        ]);
+    }
+
+    /**
+     * Enviar link de recuperación de contraseña
+     */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // Buscar usuario por email
+        $usuario = User::withoutGlobalScope('escuela')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$usuario) {
+            // Por seguridad, no revelamos si el email existe o no
+            return response()->json([
+                'message' => 'Si el correo existe, recibirás un enlace para restablecer tu contraseña'
+            ]);
+        }
+
+        // Generar token
+        $token = Str::random(60);
+
+        // Guardar token en la tabla password_reset_tokens
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'email' => $request->email,
+                'token' => Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+
+        // TODO: Enviar email con el token
+        // Por ahora, en desarrollo, retornamos el token (QUITAR EN PRODUCCIÓN)
+        if (config('app.env') === 'local') {
+            return response()->json([
+                'message' => 'Token generado (solo en desarrollo)',
+                'token' => $token,
+                'reset_url' => config('app.frontend_url') . '/reset-password?token=' . $token . '&email=' . $request->email
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Si el correo existe, recibirás un enlace para restablecer tu contraseña'
+        ]);
+    }
+
+    /**
+     * Restablecer contraseña con token
+     */
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+            'token' => 'required',
+        ]);
+
+        // Buscar el token
+        $passwordReset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$passwordReset) {
+            return response()->json([
+                'message' => 'Token inválido o expirado'
+            ], 400);
+        }
+
+        // Verificar que el token no haya expirado (60 minutos)
+        if (now()->diffInMinutes($passwordReset->created_at) > 60) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return response()->json([
+                'message' => 'El token ha expirado'
+            ], 400);
+        }
+
+        // Verificar el token
+        if (!Hash::check($request->token, $passwordReset->token)) {
+            return response()->json([
+                'message' => 'Token inválido'
+            ], 400);
+        }
+
+        // Buscar usuario
+        $usuario = User::withoutGlobalScope('escuela')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no encontrado'
+            ], 404);
+        }
+
+        // Actualizar contraseña
+        $usuario->password = Hash::make($request->password);
+        $usuario->save();
+
+        // Eliminar el token usado
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        // Revocar todos los tokens del usuario por seguridad
+        $usuario->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Contraseña restablecida exitosamente'
+        ]);
+    }
+
+    /**
+     * Verificar email del usuario
+     */
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'hash' => 'required|string',
+        ]);
+
+        $usuario = User::withoutGlobalScope('escuela')->findOrFail($request->id);
+
+        if (!hash_equals((string) $request->hash, sha1($usuario->getEmailForVerification()))) {
+            return response()->json([
+                'message' => 'URL de verificación inválida'
+            ], 400);
+        }
+
+        if ($usuario->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'El correo electrónico ya ha sido verificado'
+            ]);
+        }
+
+        $usuario->markEmailAsVerified();
+
+        return response()->json([
+            'message' => 'Correo electrónico verificado exitosamente'
+        ]);
+    }
+
+    /**
+     * Reenviar email de verificación
+     */
+    public function resendVerificationEmail(Request $request): JsonResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'El correo electrónico ya ha sido verificado'
+            ]);
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json([
+            'message' => 'Email de verificación enviado'
         ]);
     }
 }

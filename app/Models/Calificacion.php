@@ -54,6 +54,6 @@ class Calificacion extends Model
      */
     public function maestro(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class, 'maestro_id');
+        return $this->belongsTo(User::class, 'maestro_id');
     }
 }

@@ -41,53 +41,60 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('register-express', [AuthController::class, 'registerExpress']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']);
+    Route::get('verify-email', [AuthController::class, 'verifyEmail'])->name('verification.verify');
 });
 
 // Protected routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {
-    // Auth
+    // Auth routes that don't require email verification
     Route::prefix('auth')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
+        Route::post('resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
     });
 
-    // Estructura Académica
-    Route::apiResource('niveles', NivelController::class);
-    Route::apiResource('grados', GradoController::class);
-    Route::apiResource('grupos', GrupoController::class);
+    // Routes that require email verification
+    Route::middleware('verified')->group(function () {
+        // Estructura Académica
+        Route::apiResource('niveles', NivelController::class);
+        Route::apiResource('grados', GradoController::class);
+        Route::apiResource('grupos', GrupoController::class);
 
-    // Alumnos y Padres
-    Route::apiResource('alumnos', AlumnoController::class);
-    Route::apiResource('padres', PadreController::class);
+        // Alumnos y Padres
+        Route::apiResource('alumnos', AlumnoController::class);
+        Route::apiResource('padres', PadreController::class);
 
-    // Onboarding
-    Route::prefix('onboarding')->group(function () {
-        Route::get('status', [OnboardingController::class, 'status']);
-        Route::post('complete-school-data', [OnboardingController::class, 'completeSchoolData']);
-        Route::post('complete-structure', [OnboardingController::class, 'completeStructure']);
-        Route::post('complete', [OnboardingController::class, 'complete']);
-        Route::post('skip', [OnboardingController::class, 'skip']);
+        // Onboarding
+        Route::prefix('onboarding')->group(function () {
+            Route::get('status', [OnboardingController::class, 'status']);
+            Route::post('complete-school-data', [OnboardingController::class, 'completeSchoolData']);
+            Route::post('complete-structure', [OnboardingController::class, 'completeStructure']);
+            Route::post('complete', [OnboardingController::class, 'complete']);
+            Route::post('skip', [OnboardingController::class, 'skip']);
+        });
+
+        // Materias
+        Route::apiResource('materias', MateriaController::class);
+        Route::post('materias/{materia}/asignar-grupo', [MateriaController::class, 'asignarGrupo']);
+        Route::put('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'actualizarAsignacion']);
+        Route::delete('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'desasignarGrupo']);
+
+        // Ciclos Escolares y Períodos
+        Route::apiResource('ciclos-escolares', CicloEscolarController::class);
+        Route::apiResource('periodos', PeriodoController::class);
+
+        // Calificaciones
+        Route::apiResource('calificaciones', CalificacionController::class);
+        Route::get('alumnos/{alumnoId}/boleta', [CalificacionController::class, 'boleta']);
+
+        // Asistencias
+        Route::apiResource('asistencias', AsistenciaController::class);
+        Route::post('grupos/{grupoId}/asistencias', [AsistenciaController::class, 'registrarGrupo']);
+        Route::get('alumnos/{alumnoId}/reporte-asistencias', [AsistenciaController::class, 'reporteAlumno']);
+
+        // Conceptos de Cobro
+        Route::apiResource('conceptos-cobro', ConceptoCobroController::class);
     });
-
-    // Materias
-    Route::apiResource('materias', MateriaController::class);
-    Route::post('materias/{materia}/asignar-grupo', [MateriaController::class, 'asignarGrupo']);
-    Route::put('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'actualizarAsignacion']);
-    Route::delete('materias/{materia}/grupos/{grupoId}', [MateriaController::class, 'desasignarGrupo']);
-
-    // Ciclos Escolares y Períodos
-    Route::apiResource('ciclos-escolares', CicloEscolarController::class);
-    Route::apiResource('periodos', PeriodoController::class);
-
-    // Calificaciones
-    Route::apiResource('calificaciones', CalificacionController::class);
-    Route::get('alumnos/{alumnoId}/boleta', [CalificacionController::class, 'boleta']);
-
-    // Asistencias
-    Route::apiResource('asistencias', AsistenciaController::class);
-    Route::post('grupos/{grupoId}/asistencias', [AsistenciaController::class, 'registrarGrupo']);
-    Route::get('alumnos/{alumnoId}/reporte-asistencias', [AsistenciaController::class, 'reporteAlumno']);
-
-    // Conceptos de Cobro
-    Route::apiResource('conceptos-cobro', ConceptoCobroController::class);
 });

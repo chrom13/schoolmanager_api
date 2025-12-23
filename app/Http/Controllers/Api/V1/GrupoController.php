@@ -37,7 +37,7 @@ class GrupoController extends Controller
             'grado_id' => ['required', 'exists:grados,id'],
             'nombre' => ['required', 'string', 'max:255'],
             'capacidad_maxima' => ['sometimes', 'integer', 'min:1', 'max:100'],
-            'maestro_id' => ['nullable', 'exists:usuarios,id'],
+            'maestro_id' => ['nullable', 'exists:users,id'],
         ]);
 
         $grupo = Grupo::create($request->only(['grado_id', 'nombre', 'capacidad_maxima', 'maestro_id']));
@@ -68,7 +68,7 @@ class GrupoController extends Controller
         $request->validate([
             'nombre' => ['sometimes', 'string', 'max:255'],
             'capacidad_maxima' => ['sometimes', 'integer', 'min:1', 'max:100'],
-            'maestro_id' => ['nullable', 'exists:usuarios,id'],
+            'maestro_id' => ['nullable', 'exists:users,id'],
             'activo' => ['sometimes', 'boolean'],
         ]);
 
