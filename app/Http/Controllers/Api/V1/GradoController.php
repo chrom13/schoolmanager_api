@@ -14,7 +14,18 @@ class GradoController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Grado::with(['nivel', 'grupos']);
+        $escuelaId = $request->user()->escuela_id;
+
+        $query = Grado::with(['nivel'])
+            ->withCount([
+                'grupos as total_alumnos' => function ($query) use ($escuelaId) {
+                    $query->withoutGlobalScopes()
+                        ->join('inscripciones', 'grupos.id', '=', 'inscripciones.grupo_id')
+                        ->where('grupos.escuela_id', $escuelaId)
+                        ->where('inscripciones.estado', 'activa')
+                        ->whereNull('inscripciones.deleted_at');
+                }
+            ]);
 
         // Filtrar por nivel si se proporciona
         if ($request->has('nivel_id')) {
@@ -67,10 +78,9 @@ class GradoController extends Controller
         $request->validate([
             'nombre' => ['sometimes', 'string', 'max:255'],
             'orden' => ['sometimes', 'integer', 'min:1'],
-            'activo' => ['sometimes', 'boolean'],
         ]);
 
-        $grado->update($request->only(['nombre', 'orden', 'activo']));
+        $grado->update($request->only(['nombre', 'orden']));
 
         return response()->json([
             'message' => 'Grado actualizado exitosamente',
@@ -79,14 +89,26 @@ class GradoController extends Controller
     }
 
     /**
-     * Eliminar grado
+     * Eliminar grado (soft delete)
      */
-    public function destroy(Grado $grado): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $grado = Grado::findOrFail($id);
+
+        // Verificar si el grado tiene grupos activos asociados
+        $gruposActivos = $grado->grupos()->count();
+
+        if ($gruposActivos > 0) {
+            return response()->json([
+                'message' => 'No se puede eliminar el grado porque tiene grupos asociados activos'
+            ], 422);
+        }
+
+        // Realizar soft delete
         $grado->delete();
 
         return response()->json([
             'message' => 'Grado eliminado exitosamente'
-        ]);
+        ], 200);
     }
 }

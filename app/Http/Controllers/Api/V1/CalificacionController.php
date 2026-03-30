@@ -131,6 +131,65 @@ class CalificacionController extends Controller
     }
 
     /**
+     * Guardar múltiples calificaciones en batch
+     */
+    public function storeBatch(Request $request): JsonResponse
+    {
+        $request->validate([
+            'calificaciones' => ['required', 'array', 'min:1'],
+            'calificaciones.*.alumno_id' => ['required', 'exists:alumnos,id'],
+            'calificaciones.*.materia_id' => ['required', 'exists:materias,id'],
+            'calificaciones.*.periodo_id' => ['required', 'exists:periodos,id'],
+            'calificaciones.*.calificacion' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'calificaciones.*.observaciones' => ['nullable', 'string'],
+        ]);
+
+        $maestroId = auth()->id();
+        $saved = [];
+        $errors = [];
+
+        \DB::beginTransaction();
+        try {
+            foreach ($request->calificaciones as $index => $data) {
+                // Solo procesar si hay calificación
+                if ($data['calificacion'] === null || $data['calificacion'] === '') {
+                    continue;
+                }
+
+                $calificacion = Calificacion::updateOrCreate(
+                    [
+                        'alumno_id' => $data['alumno_id'],
+                        'materia_id' => $data['materia_id'],
+                        'periodo_id' => $data['periodo_id'],
+                    ],
+                    [
+                        'calificacion' => $data['calificacion'],
+                        'observaciones' => $data['observaciones'] ?? null,
+                        'maestro_id' => $maestroId,
+                    ]
+                );
+
+                $saved[] = $calificacion;
+            }
+
+            \DB::commit();
+
+            return response()->json([
+                'message' => count($saved) . ' calificaciones guardadas exitosamente',
+                'data' => $saved,
+                'count' => count($saved),
+            ]);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error al guardar calificaciones',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Obtener boleta de calificaciones de un alumno
      */
     public function boleta(Request $request, int $alumnoId): JsonResponse

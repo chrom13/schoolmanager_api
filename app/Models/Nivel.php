@@ -34,10 +34,28 @@ class Nivel extends Model
     }
 
     /**
+     * Relación con Ciclos Escolares
+     */
+    public function ciclosEscolares(): HasMany
+    {
+        return $this->hasMany(CicloEscolar::class);
+    }
+
+    /**
      * Relación hasManyThrough para obtener todos los grupos del nivel
      */
     public function grupos()
     {
         return $this->hasManyThrough(Grupo::class, Grado::class);
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? $this->getRouteKeyName(), $value)
+            ->where('escuela_id', auth()->user()->escuela_id)
+            ->firstOrFail();
     }
 }

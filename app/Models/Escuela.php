@@ -28,6 +28,10 @@ class Escuela extends Model
         'onboarding_data',
         'onboarding_completado_at',
         'es_registro_express',
+        'costo_operativo_mensual',
+        'colegiatura_mensual',
+        'porcentaje_tolerancia',
+        'alumnos_necesarios',
     ];
 
     protected $casts = [
@@ -36,6 +40,10 @@ class Escuela extends Model
         'es_registro_express' => 'boolean',
         'onboarding_data' => 'array',
         'onboarding_completado_at' => 'datetime',
+        'costo_operativo_mensual' => 'decimal:2',
+        'colegiatura_mensual' => 'decimal:2',
+        'porcentaje_tolerancia' => 'integer',
+        'alumnos_necesarios' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

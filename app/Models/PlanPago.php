@@ -9,21 +9,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Grado extends Model
+class PlanPago extends Model
 {
     use HasFactory, BelongsToTenant, SoftDeletes;
 
-    protected $table = 'grados';
+    protected $table = 'planes_pago';
 
     protected $fillable = [
         'escuela_id',
+        'ciclo_escolar_id',
         'nivel_id',
         'nombre',
-        'orden',
+        'descripcion',
+        'activo',
     ];
 
     protected $casts = [
-        'orden' => 'integer',
+        'activo' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -32,23 +34,18 @@ class Grado extends Model
     /**
      * Relaciones
      */
+    public function cicloEscolar(): BelongsTo
+    {
+        return $this->belongsTo(CicloEscolar::class);
+    }
+
     public function nivel(): BelongsTo
     {
         return $this->belongsTo(Nivel::class);
     }
 
-    public function grupos(): HasMany
+    public function conceptos(): HasMany
     {
-        return $this->hasMany(Grupo::class);
-    }
-
-    /**
-     * Retrieve the model for a bound value.
-     */
-    public function resolveRouteBinding($value, $field = null)
-    {
-        return $this->where($field ?? $this->getRouteKeyName(), $value)
-            ->where('escuela_id', auth()->user()->escuela_id)
-            ->firstOrFail();
+        return $this->hasMany(ConceptoPlanPago::class, 'plan_pago_id')->orderBy('orden');
     }
 }

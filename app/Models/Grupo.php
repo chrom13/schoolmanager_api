@@ -19,13 +19,16 @@ class Grupo extends Model
     protected $fillable = [
         'escuela_id',
         'grado_id',
+        'ciclo_escolar_id',
         'nombre',
         'capacidad_maxima',
+        'capacidad_ideal',
         'maestro_id',
     ];
 
     protected $casts = [
         'capacidad_maxima' => 'integer',
+        'capacidad_ideal' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -39,14 +42,26 @@ class Grupo extends Model
         return $this->belongsTo(Grado::class);
     }
 
+    public function cicloEscolar(): BelongsTo
+    {
+        return $this->belongsTo(CicloEscolar::class);
+    }
+
     public function maestro(): BelongsTo
     {
         return $this->belongsTo(User::class, 'maestro_id');
     }
 
-    public function alumnos(): HasMany
+    public function inscripciones(): HasMany
     {
-        return $this->hasMany(Alumno::class);
+        return $this->hasMany(Inscripcion::class);
+    }
+
+    public function alumnos(): BelongsToMany
+    {
+        return $this->belongsToMany(Alumno::class, 'inscripciones')
+            ->withPivot(['fecha_inscripcion', 'estado', 'observaciones'])
+            ->withTimestamps();
     }
 
     public function materias(): BelongsToMany
